@@ -44,7 +44,7 @@ export const LoginScreen = () => {
         return true;
     }
     const isPasswordValid = () => {
-        if ( password.length < 5){
+        if ( password.length < 5 || password.length > 40){
             return setPasswordValid(false);
         };
         setPasswordValid(true);

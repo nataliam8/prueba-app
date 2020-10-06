@@ -15,3 +15,8 @@ npm start
 ### Notas: 
 
 1. Este repositorio (frontend) corre en el puerto ```localhost:3000```
+
+2. Para loggearse en la app, se puede hacer mediante los siguientes usuarios:
+nombre: nmeneses@correo.co , contraseña: 12345
+nombre: juan@correo.co , contraseña: 12345
+O por defecto crear una nueva cuenta.

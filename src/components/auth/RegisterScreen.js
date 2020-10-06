@@ -45,7 +45,7 @@ export const RegisterScreen = () => {
 
     //Validaciones del form
     const isNombreValid = () => {
-        if( nombre.trim().length === 0 ){
+        if( nombre.length === 0 || nombre.length > 40){
             return setNombreValid(false);
         };
         setNombreValid(true);
@@ -61,7 +61,7 @@ export const RegisterScreen = () => {
     };
 
     const isPasswordValid = () => {
-        if ( password !== password2 || password.length < 5){
+        if ( password !== password2 || password.length < 5 || password.length > 70){
             return setPasswordValid(false);
         };
         setPasswordValid(true);
