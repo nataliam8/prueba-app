@@ -1,8 +1,18 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
+import { startLogout } from '../../actions/auth';
 
 export const Navbar = () => {
 
+    const { nombre } = useSelector( state => state.auth );
+    const dispatch = useDispatch();
+
+    //Función para logout
+    const handleLogout = () => {
+        dispatch( startLogout() );
+    };
+    
     return(
         <nav className="navbar navbar-expand navbar-dark bg-dark">
    
@@ -38,9 +48,12 @@ export const Navbar = () => {
 
             <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul className="navbar-nav ml-auto">
-                    <span className="nav-item nav-link text-info"> Natalia </span>
+                    <span className="nav-item nav-link text-info"> {nombre} </span>
 
-                    <button className="btn btn-outline-danger">
+                    <button 
+                        className="btn btn-outline-danger"
+                        onClick= { handleLogout }
+                    >
                         <i className="fas fa-sign-out-alt"></i>
                         <span> Salir</span>
                     </button>

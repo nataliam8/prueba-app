@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Modal from 'react-modal';
@@ -7,34 +7,67 @@ import '../auth/login.css';
 import '../auth/login.css';
 
 import { customStyles } from '../../helpers/customStyles';
-import { useForm } from '../../hooks/useForm';
 import { uiCloseModal } from '../../actions/ui';
+import { categoriaClearActive, categoriaStartAddNew, categoriaStartLoading, categoriaStartUpdate } from '../../actions/categorias';
 
 //Enlazar el modal con la app
 Modal.setAppElement('#root');
 
+const initCategoria= {
+    nombre: '',
+    descripcion: '',
+};
+
 export const CategoriasModal = () => {
 
     const { modalOpen } = useSelector( state => state.ui );
+    const { activeCategoria } = useSelector( state => state.categorias );
+    const { id } = useSelector( state => state.auth );
     const dispatch = useDispatch();
 
     //Obtener información del form
-    const [ formValues, handleInputChange ] = useForm({
-        nombre: '',
-        descripcion: ''
-    });
+    const [formValues, setFormValues] = useState( initCategoria);
 
     const { nombre, descripcion } = formValues;
 
+    useEffect(() => {
+        // console.log(activeCategoria);
+        if ( activeCategoria ) {
+            setFormValues( activeCategoria );
+        } else {
+            setFormValues( initCategoria );
+        }
+    }, [activeCategoria, setFormValues]);
+
+    const handleInputChange = ({ target }) => {
+        setFormValues({
+            ...formValues,
+            [target.name]: target.value
+        });
+    };
+
     const [nombreValid, setNombreValid] = useState(true);
     const [descValid, setDescValid] = useState(true);
+
 
     //Submit del form
     const handleSubmit = (e) => {
         e.preventDefault();
         if( isNombreValid() && isDescValid()){
-            console.log('Formulario correcto');
-        }
+            // debugger;
+            const idUsuario = id;
+            //Condicion para ctualizar o crear una nueva categoria
+            if( activeCategoria) {
+                dispatch( categoriaStartUpdate(formValues, idUsuario) );
+                dispatch ( categoriaStartLoading(id) );
+    
+            } else {
+                dispatch( categoriaStartAddNew(formValues, idUsuario));
+            }
+            closeModal();
+            setFormValues( initCategoria );
+        };
+
     };
 
     //Validaciones del form
@@ -54,23 +87,26 @@ export const CategoriasModal = () => {
         return true;
     };
 
-
     const closeModal = () => {
         dispatch( uiCloseModal() );
+        dispatch( categoriaClearActive() );
+        setFormValues( initCategoria );
     };
     
     return (
         <Modal
           isOpen={ modalOpen }
-        //   onAfterOpen={afterOpenModal}
-        //  onRequestClose={closeModal}
           style={ customStyles }
           closeTimeoutMS={ 200 }
           className="modal modal2"
           overlayClassName="modal-fondo"
         >
             <div className="row">
-                <h2 className="col-10 centrar"> Agregar categoría </h2>
+                <h2 className="col-10 centrar"> 
+                    {
+                      (!activeCategoria) ? "Agregar categoría" :  "Editar categoria"
+                    } 
+                </h2>
                 <div className="col-2 right">
                     <button 
                         className="btn btn-danger btn-sm"
@@ -108,7 +144,6 @@ export const CategoriasModal = () => {
                 </div>
 
                 <button
-                    type="submit"
                     className="btn btn-outline-primary btn-block"
                 >
                     <i className="far fa-save"></i>

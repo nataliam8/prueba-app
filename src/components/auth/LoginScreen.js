@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { Link } from 'react-router-dom';
 import validator from 'validator';
+import { startLogin } from '../../actions/auth';
 
 import { useForm } from '../../hooks/useForm';
 import './login.css';
 
 export const LoginScreen = () => {
 
+    const dispatch = useDispatch();
+
     //Obtener los datos del formulario con el hook useForm
     const [ formValues, handleInputChange ] = useForm({
-        correo: '',
-        password: '',
+        correo: 'juan@correo.co',
+        password: '12345',
     });
 
     const { correo, password } = formValues;
@@ -24,7 +29,9 @@ export const LoginScreen = () => {
         e.preventDefault();
         // console.log( correo, password );
         if( isCorreoValid() && isPasswordValid() ){
-            console.log('Formulario correcto')
+            console.log('Formulario correcto');
+            dispatch( startLogin(correo,password) );
+  
         };
     };
 

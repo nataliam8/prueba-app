@@ -1,41 +1,88 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Modal from 'react-modal';
 import '../../styles.css';
 import { customStyles } from '../../helpers/customStyles';
-import { useForm } from '../../hooks/useForm';
 import { uiCloseModal } from '../../actions/ui';
+import { productoClearActive, productoStartAddNew, productoStartLoading, productoStartUpdated } from '../../actions/productos';
 
 //Enlazar el modal con la app
 Modal.setAppElement('#root');
 
+const initProducto= {
+    id: 0,
+    nombre: '',
+    tipo: '',
+    precio: '',
+    cantidad: '',
+};
+
 export const ProductosModal = () => {
 
     const { modalOpen } = useSelector( state => state.ui );
+    const { id } = useSelector( state => state.auth );
+    const { activeProducto } = useSelector( state => state.productos );
+    const { categorias } = useSelector( state => state.categorias );
+
     const dispatch = useDispatch();
 
+    // console.log(categorias);
     //Obtener información del form
-    const [ formValues, handleInputChange ] = useForm({
-        nombre: '',
-        tipo: '',
-        precio: '',
-        cantidad: ''
-    });
+    const [formValues, setFormValues] = useState( initProducto );
 
     const { nombre, tipo, precio, cantidad } = formValues;
+
+    useEffect(() => {
+        if ( activeProducto ) {
+            setFormValues( activeProducto );
+        } else {
+            setFormValues( initProducto );
+        }
+    }, [activeProducto, setFormValues]);
+
+    const handleInputChange = ({ target }) => {
+        setFormValues({
+            ...formValues,
+            [target.name]: target.value
+        });
+    };
 
     const [nombreValid, setNombreValid] = useState(true);
     const [tipoValid, setTipoValid] = useState(true);
     const [precioValid, setPrecioValid] = useState(true);
     const [cantidadValid, setCantidadValid] = useState(true);
 
+
     //Submit del form
     const handleSubmit = (e) => {
         e.preventDefault();
         if( isNombreValid() && isTipoValid() && isPrecioValid() && isCantidadValid() ){
             console.log('Formulario correcto');
+            let tipoCat;
+            categorias.map( categoria => {
+                if(tipo === categoria.nombre){
+                    tipoCat=categoria.id;
+                }
+                return categoria.id;
+            });
+
+            console.log(tipoCat);
+            const idUsuario = id;
+            if( activeProducto ){
+                console.log(formValues);
+                dispatch( productoStartUpdated(formValues, tipoCat) );
+                dispatch( productoStartLoading(idUsuario) );
+
+            } else {
+                // const idCategoria = categorias.id;
+                console.log(formValues);
+                dispatch( productoStartAddNew(formValues, tipoCat));
+            }
+            closeModal();
+            setFormValues( initProducto );
         }
+
     };
 
     //Validaciones del form
@@ -48,7 +95,8 @@ export const ProductosModal = () => {
     };
 
     const isTipoValid = () => {
-        if( tipo.length === 0 ){
+        // debugger;
+        if( tipo === "" ){
             return setTipoValid(false);
         };
         setTipoValid(true);
@@ -74,20 +122,24 @@ export const ProductosModal = () => {
 
     const closeModal = () => {
         dispatch( uiCloseModal() );
+        dispatch( productoClearActive() );
+        setFormValues( initProducto );
     };
 
     return (
         <Modal
           isOpen={ modalOpen }
-        //   onAfterOpen={afterOpenModal}
-        //   onRequestClose={closeModal}
           style={ customStyles }
           closeTimeoutMS={ 200 }
           className="modal"
           overlayClassName="modal-fondo"
         >
             <div className="row">
-                <h2 className="col-10 centrar"> Agregar producto </h2>
+                <h2 className="col-10 centrar">
+                {
+                      (!activeProducto) ? "Agregar producto" :  "Editar producto"
+                } 
+                </h2>
                 <div className="col-2 right">
                     <button 
                         className="btn btn-danger btn-sm"
@@ -113,14 +165,27 @@ export const ProductosModal = () => {
 
                 <div className="form-group">
                     <label>Tipo o categoría</label>
-                    <input
-                        type="text" 
-                        className={`form-control ${ !tipoValid && 'is-invalid'}`}
-                        placeholder="Categoría del producto"
-                        name="tipo"
-                        value={ tipo }
-                        onChange={ handleInputChange }
-                    ></input>
+                        <div className="form-group">
+                            <select 
+                                className={`form-control ${ !tipoValid && 'is-invalid'}`}
+                                id="exampleFormControlSelect1"
+                                name="tipo"
+                                autoComplete="off"
+                                value={ tipo }
+                                onChange={ handleInputChange }
+                            >
+                                <option>Seleccione...</option>
+                            {
+                                categorias.map( categoria => (
+                                    
+                                <option key={categoria.id }>{categoria.nombre}</option>
+                                ))
+                            }
+
+                            </select>
+                        </div>
+
+                    
                 </div>
 
                 <div className="form-group">
@@ -141,6 +206,7 @@ export const ProductosModal = () => {
                         type="number" 
                         className={`form-control ${ !cantidadValid && 'is-invalid'}`}
                         placeholder="Cantidad"
+                        autoComplete="off"
                         name="cantidad"
                         value={ cantidad }
                         onChange={ handleInputChange }

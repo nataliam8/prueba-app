@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import validator from 'validator';
+import { starRegister } from '../../actions/auth';
 
 import { useForm } from '../../hooks/useForm';
 import './login.css';
 
 export const RegisterScreen = () => {
+
+    const dispatch = useDispatch();
 
     //Obtener los datos del formulario con el hook useForm
     const [ formValues, handleInputChange ] = useForm({
@@ -29,6 +34,13 @@ export const RegisterScreen = () => {
         if( isNombreValid() && isCorreoValid() && isPasswordValid() ){
             console.log('Formulario correcto');
         };
+
+        if( password !== password2){
+            Swal.fire('Error', 'Las constraseñas deben ser iguales', 'error');
+        };
+
+        console.log('yes');
+        dispatch( starRegister(nombre, correo, password) );
     };
 
     //Validaciones del form
