@@ -5,7 +5,7 @@ import { ProductosModal } from './ProductosModal';
 import { uiOpenModal } from '../../actions/ui';
 import { ProductosList } from './ProductosList';
 import { categoriaStartLoading } from '../../actions/categorias';
-import { productoStartLoading } from '../../actions/productos';
+import { productoByCategoriaStartLoading, productoStartLoading } from '../../actions/productos';
 import { SearchProducto } from './SearchProducto';
 
 export const Productos = ({history}) => {
@@ -13,10 +13,18 @@ export const Productos = ({history}) => {
     const dispatch = useDispatch();
     const { id } = useSelector( state => state.auth );
 
+    let path = (window.location.href.split('/'));
+    path = path[4];
+    console.log(path);
+
     useEffect(() => {
         dispatch ( categoriaStartLoading(id) );
-        dispatch( productoStartLoading(id) );
-    }, [dispatch,id]);
+        if( path === undefined){
+            dispatch( productoStartLoading(id) );
+        }else {
+            dispatch( productoByCategoriaStartLoading(path) );
+        }
+    }, [dispatch,id,path]);
 
     const openModal = (e) => {
         dispatch( uiOpenModal() );
@@ -25,7 +33,13 @@ export const Productos = ({history}) => {
     return (
         <div className="container mt-5">
             <div className="row">
-                <h2 className="col-6">Lista de productos </h2>
+                <h2 className="col-6">
+                    {
+                        (path === undefined)
+                        ?"Lista de productos"
+                        :"Productos por categoria"
+                    }
+                </h2>
                 <div className="col-6 right">
                     <button 
                         className="btn btn-warning btn-lg right"

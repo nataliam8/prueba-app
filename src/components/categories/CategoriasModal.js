@@ -72,7 +72,7 @@ export const CategoriasModal = () => {
 
     //Validaciones del form
     const isNombreValid = () => {
-        if( nombre.trim().length === 0 ){
+        if( nombre.trim().length === 0 || nombre.length > 40){
             return setNombreValid(false);
         };
         setNombreValid(true);
@@ -80,7 +80,7 @@ export const CategoriasModal = () => {
     };
 
     const isDescValid = () => {
-        if( descripcion.length < 5 ){
+        if( descripcion.length < 5 || descripcion.length > 250 ){
             return setDescValid(false);
         };
         setDescValid(true);

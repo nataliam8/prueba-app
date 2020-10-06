@@ -87,7 +87,7 @@ export const ProductosModal = () => {
 
     //Validaciones del form
     const isNombreValid = () => {
-        if( nombre.length === 0 ){
+        if( nombre.length === 0 || nombre.length > 40){
             return setNombreValid(false);
         };
         setNombreValid(true);
@@ -96,7 +96,7 @@ export const ProductosModal = () => {
 
     const isTipoValid = () => {
         // debugger;
-        if( tipo === "" ){
+        if( tipo === ""){
             return setTipoValid(false);
         };
         setTipoValid(true);
