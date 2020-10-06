@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import queryString from 'query-string';
+import React, {  useState } from 'react';
 
-import { useLocation } from 'react-router-dom';
-import { useForm } from '../../hooks/useForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { productoByCategoriaStartLoading, productoByNombreStartLoading, productoStartLoading } from '../../actions/productos';
 
@@ -15,7 +12,7 @@ export const SearchProducto = ({history}) => {
         
     let path = (window.location.href.split('/'));
     path = path[4];
-    console.log(path);
+    // console.log(path);
 
     const [formValues, setFormValues] = useState( {searchText:''});
     const { searchText } = formValues;

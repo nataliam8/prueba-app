@@ -7,15 +7,14 @@ export const startLogin = (correo,password) => {
         const resp = await fetchSinToken( 'login', {correo, password}, 'POST' );
         const body = await resp.json();
 
-        console.log("1",body);
+        // console.log("1",body);
 
         if( body.result ){
-            console.log(body.data);
+            // console.log(body.data);
             const {id,nombre,correo} = body.data;
             const resp1 = await fetchPostToken( 'token', {id,nombre,correo}, 'POST' );
             const body1 = await resp1.json();
 
-            console.log("2",body1);
             if(body1.result){
                 localStorage.setItem('token', body1.data);
                 localStorage.setItem('token-init-date', new Date().getTime() );
@@ -38,8 +37,7 @@ export const startChecking = () => {
     return async(dispatch) => {
         const resp = await fetchConToken('reNewToken');
         const body = await resp.json();
-
-        console.log("3",body);
+;
         if(body.result){
             localStorage.setItem('token', body.data);
             localStorage.setItem('token-init-date', new Date().getTime() );

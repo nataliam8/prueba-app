@@ -15,7 +15,7 @@ export const Productos = ({history}) => {
 
     let path = (window.location.href.split('/'));
     path = path[4];
-    console.log(path);
+    // console.log(path);
 
     useEffect(() => {
         dispatch ( categoriaStartLoading(id) );

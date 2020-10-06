@@ -23,7 +23,7 @@ export const fetchPostToken = (endpoint, data, method='GET') => {
     if( method === 'GET'){
         return fetch(url);
     } else {
-        console.log('esta data',data);
+        // console.log('esta data',data);
         return fetch(url, {
             method,
             headers: {
