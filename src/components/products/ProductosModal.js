@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import '../../styles.css';
 import { customStyles } from '../../helpers/customStyles';
 import { uiCloseModal } from '../../actions/ui';
-import { productoClearActive, productoStartAddNew, productoStartLoading, productoStartUpdated } from '../../actions/productos';
+import { productoByCategoriaStartLoading, productoClearActive, productoStartAddNew, productoStartLoading, productoStartUpdated } from '../../actions/productos';
 
 //Enlazar el modal con la app
 Modal.setAppElement('#root');
@@ -27,6 +27,8 @@ export const ProductosModal = () => {
 
     const dispatch = useDispatch();
 
+    let path = (window.location.href.split('/'));
+    path = path[4];
     // console.log(categorias);
     //Obtener información del form
     const [formValues, setFormValues] = useState( initProducto );
@@ -66,21 +68,28 @@ export const ProductosModal = () => {
                 }
                 return categoria.id;
             });
-
+            debugger;
             console.log(tipoCat);
             const idUsuario = id;
             if( activeProducto ){
+                // debugger
                 console.log(formValues);
-                dispatch( productoStartUpdated(formValues, tipoCat) );
-                dispatch( productoStartLoading(idUsuario) );
+                formValues.idCategoria = tipoCat;
+                formValues.id = activeProducto.id;
+                dispatch( productoStartUpdated(formValues) );
+                // dispatch( productoStartLoading(idUsuario) );
 
             } else {
-                // const idCategoria = categorias.id;
-                console.log(formValues);
                 dispatch( productoStartAddNew(formValues, tipoCat));
             }
             closeModal();
             setFormValues( initProducto );
+            if( path === undefined){
+                dispatch( productoStartLoading(idUsuario) );
+            }else{
+                dispatch( productoByCategoriaStartLoading(path) );
+            }
+            window.location.reload(false);
         }
 
     };

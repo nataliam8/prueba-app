@@ -66,6 +66,8 @@ export const CategoriasModal = () => {
             }
             closeModal();
             setFormValues( initCategoria );
+            dispatch ( categoriaStartLoading(id) );
+
         };
 
     };

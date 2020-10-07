@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { productoSetActive, productoStartDelete } from '../../actions/productos';
+import { productoSetActive, productoStartDelete, productoStartUpdated } from '../../actions/productos';
 import { uiOpenModal } from '../../actions/ui';
 import { ProductosModal } from './ProductosModal';
 
-export const ProductosTable = (producto) => {
+export const ProductosTable = (producto,inc) => {
     // let i = 0;
 
     const dispatch = useDispatch();
@@ -17,8 +17,10 @@ export const ProductosTable = (producto) => {
     };
     
     const deleteProducto = (e) => {
+        //debugger;
         dispatch( productoSetActive(producto) );
         dispatch( productoStartDelete() );
+
     };
     return (
         <>

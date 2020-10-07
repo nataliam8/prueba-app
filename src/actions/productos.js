@@ -12,6 +12,7 @@ export const productoStartAddNew = ( producto, tipoCat) => {
             if( body.result ){
 
                 dispatch( productoAddNew (producto) );
+               
                 Swal.fire('Guardado', body.mensaje,'success');
             }else{
                 Swal.fire('Error', body.mensaje, 'error');
@@ -33,8 +34,8 @@ export const productoSetActive = ( producto ) => ({
 
 export const productoClearActive = () => ({ type: types.productoClearActive })
 
-export const productoStartUpdated = (producto, tipoCat) => {
-    producto.idCategoria = tipoCat;
+export const productoStartUpdated = (producto) => {
+    //producto.idCategoria = tipoCat;
     return async(dispatch) => {
         try {
             const resp = await fetchConToken(`editProducto`, producto, 'POST');
@@ -42,6 +43,7 @@ export const productoStartUpdated = (producto, tipoCat) => {
             // debugger;
             console.log(body);
             if(body.result){    
+                dispatch(productoUpdated(producto));
                 Swal.fire('Guardado', body.mensaje, 'success');
             }else{
                 Swal.fire('Error', body.mensaje, 'error');       
@@ -54,6 +56,7 @@ export const productoStartUpdated = (producto, tipoCat) => {
 
 export const productoStartDelete = () => {
     return async(dispatch, getState) => {
+        debugger;
         const { id } = getState().productos.activeProducto;
         
         try {
@@ -72,10 +75,10 @@ export const productoStartDelete = () => {
         }
     }    
 }
-// const productoUpdated = ( producto) => ({
-//     types: types.productoUpdated,
-//     payload: producto
-// });
+const productoUpdated = ( producto) => ({
+    types: types.productoUpdated,
+    payload: producto
+});
 
 export const productoDeleted = () => ({ type: types.productoDeleted });
 
